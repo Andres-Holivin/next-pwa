@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Patient {
+  no_registration String   @id @unique
+  no_rm           String
+  nama_pasien     String
+  tgl_lahir       DateTime
+  kelas           String
+  ruang           String
+  no_bed          Int
+  no_handphone    String
+  cart            Cart[]
+}
+
+model Restaurant {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  menu      Menu[]
+}
+
+model Menu {
+  id           Int         @id @default(autoincrement())
+  name         String
+  description  String
+  price        Int
+  createdAt    DateTime    @default(now())
+  cart         Cart[]
+  Restaurant   Restaurant? @relation(fields: [restaurantId], references: [id])
+  restaurantId Int?
+}
+
+model Cart {
+  id          Int      @id @default(autoincrement())
+  status      String
+  status_note String
+  patient     Patient  @relation(fields: [patient_id], references: [no_registration])
+  patient_id  String
+  menu        Menu     @relation(fields: [menu_id], references: [id])
+  menu_id     Int
+  createdAt   DateTime @default(now())
+}
